@@ -65,7 +65,7 @@ found:
 	memset(&p->context, 0, sizeof(p->context));
 	memset(p->trapframe, 0, PAGE_SIZE);
 	memset((void *)p->kstack, 0, PAGE_SIZE);
-	p->context.ra = (uint64)usertrapret;
+	p->context.ra = (uint64)usertrapret;	// 第一次执行用户程序会先进入到此函数
 	p->context.sp = p->kstack + PAGE_SIZE;
 	return p;
 }
@@ -105,6 +105,11 @@ void sched(void)
 	if (p->state == RUNNING)
 		panic("sched running");
 	swtch(&p->context, &idle.context);
+	// swtch 在汇编中是：
+	// 80200b24:	00000097          	auipc	ra,0x0
+    // 80200b28:	3a6080e7          	jalr	934(ra) # 80200eca <swtch>
+	// jalr 会将当前pc+4存入ra中(即jalr的下一条指令，也就是swtch()的下一条语句)，
+	// 然后跳转到swtch函数swtch最后会执行ret，即跳到最新任务的ra执行
 }
 
 // Give up the CPU for one scheduling round.

@@ -37,4 +37,4 @@ swtch:
         ld s10, 96(a1)
         ld s11, 104(a1)
 
-        ret
+        ret     # 返回到 ra 处
