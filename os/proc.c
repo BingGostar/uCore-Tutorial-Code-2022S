@@ -64,9 +64,9 @@ found:
 	p->state = USED;
 	memset(&p->context, 0, sizeof(p->context));
 	memset(p->trapframe, 0, PAGE_SIZE);
-	memset((void *)p->kstack, 0, PAGE_SIZE);
-	p->context.ra = (uint64)usertrapret;	// 第一次执行用户程序会先进入到此函数
-	p->context.sp = p->kstack + PAGE_SIZE;
+	memset((void *)p->kstack, 0, PAGE_SIZE);// 分配栈指针，p->kstack 到 p->kstack + pagesize 
+	p->context.ra = (uint64)usertrapret;	// 设置ra。swth执行完，ret返回，进入usertrapret，此函数是返回用户空间前的准备
+	p->context.sp = p->kstack + PAGE_SIZE;  // 为什么要加pagesize, 因为栈指针从高到低走，所以先加上
 	return p;
 }
 

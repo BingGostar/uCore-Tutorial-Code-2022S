@@ -43,10 +43,10 @@ int run_all_app()
 		struct proc *p = allocproc();
 		struct trapframe *trapframe = p->trapframe;
 		load_app(i, app_info_ptr);
-		uint64 entry = BASE_ADDRESS + i * MAX_APP_SIZE;
+		uint64 entry = BASE_ADDRESS + i * MAX_APP_SIZE;			// 用户程序代码起始
 		tracef("load app %d at %p", i, entry);
-		trapframe->epc = entry;
-		trapframe->sp = (uint64)p->ustack + USER_STACK_SIZE;
+		trapframe->epc = entry;									// 设置epc，返回用户空间后直接跳到这运行
+		trapframe->sp = (uint64)p->ustack + USER_STACK_SIZE;	// 用户程序栈起始(高地址，由高向低)
 		p->state = RUNNABLE;
 		/*
 		* LAB1: you may need to initialize your new fields of proc here
