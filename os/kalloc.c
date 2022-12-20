@@ -22,7 +22,8 @@ void freerange(void *pa_start, void *pa_end)
 
 void kinit()
 {
-	freerange(ekernel, (void *)PHYSTOP);
+	// 初始化从ekernel到PHYSTOP的所有物理地址作为空闲的物理地址
+	freerange(ekernel, (void *)PHYSTOP); // ekernel 为链接脚本定义的内核代码结束地址，PHYSTOP = 0x88000000
 }
 
 // Free the page of physical memory pointed at by v,
