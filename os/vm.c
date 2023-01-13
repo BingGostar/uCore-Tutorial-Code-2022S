@@ -11,7 +11,7 @@ extern char trampoline[];
 pagetable_t kvmmake(void)
 {
 	pagetable_t kpgtbl;
-	kpgtbl = (pagetable_t)kalloc();
+	kpgtbl = (pagetable_t)kalloc();		// 先申请一个页表(4k)，L2级page table
 	memset(kpgtbl, 0, PGSIZE);
 	// map kernel text executable and read-only.
 	kvmmap(kpgtbl, KERNBASE, KERNBASE, (uint64)e_text - KERNBASE,
@@ -117,7 +117,7 @@ int mappages(pagetable_t pagetable, uint64 va, uint64 size, uint64 pa, int perm)
 	a = PGROUNDDOWN(va);
 	last = PGROUNDDOWN(va + size - 1);
 	for (;;) {
-		if ((pte = walk(pagetable, a, 1)) == 0)
+		if ((pte = walk(pagetable, a, 1)) == 0)  // 在页表(pagetable)中定位虚拟地址(a)的L0级页表的位置(pte)
 			return -1;
 		if (*pte & PTE_V) {
 			errorf("remap");

@@ -300,7 +300,7 @@ static inline void sfence_vma()
 #define PTE_U (1L << 4) // 1 -> user can access
 
 // shift a physical address to the right place for a PTE.
-#define PA2PTE(pa) ((((uint64)pa) >> 12) << 10)
+#define PA2PTE(pa) ((((uint64)pa) >> 12) << 10) // 物理地址向右移动12位，剔除offset，再想左移动10位，给flags留空间，最终形成了 PPN + flags(空的)
 
 #define PTE2PA(pte) (((pte) >> 10) << 12)
 

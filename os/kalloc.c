@@ -15,7 +15,7 @@ struct {
 void freerange(void *pa_start, void *pa_end)
 {
 	char *p;
-	p = (char *)PGROUNDUP((uint64)pa_start);
+	p = (char *)PGROUNDUP((uint64)pa_start); // 对齐页
 	for (; p + PGSIZE <= (char *)pa_end; p += PGSIZE)
 		kfree(p);
 }
@@ -36,7 +36,7 @@ void kfree(void *pa)
 	if (((uint64)pa % PGSIZE) != 0 || (char *)pa < ekernel ||
 	    (uint64)pa >= PHYSTOP)
 		panic("kfree");
-	// Fill with junk to catch dangling refs.
+	// Fill with junk to catch dangling refs. 以页为单位向对应内存中填入垃圾数据（全1）
 	memset(pa, 1, PGSIZE);
 	l = (struct linklist *)pa;
 	l->next = kmem.freelist;
