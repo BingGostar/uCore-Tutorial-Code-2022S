@@ -192,7 +192,7 @@ extern int PID;
 
 void virtio_disk_rw(struct buf *b, int write)
 {
-	uint64 sector = b->blockno * (BSIZE / 512);
+	uint64 sector = b->blockno * (BSIZE / 512); // 根据 block num 计算扇区位置
 	// the spec's Section 5.2 says that legacy block operations use
 	// three descriptors: one for type/reserved/sector, one for the
 	// data, one for a 1-byte status result.

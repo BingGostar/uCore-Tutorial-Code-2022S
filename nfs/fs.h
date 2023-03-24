@@ -11,7 +11,7 @@
 #define ROOTDEV 1 // device number of file system root disk
 #define MAXOPBLOCKS 10 // max # of blocks any FS op writes
 #define NBUF (MAXOPBLOCKS * 3) // size of disk block cache
-#define FSSIZE 1000 // size of file system in blocks
+#define FSSIZE 1000 // size of file system in blocks，文件系统的block数量（1000个够用了）
 #define MAXPATH 128 // maximum file path name
 
 #define ROOTINO 1 // root i-number
@@ -30,6 +30,15 @@ struct superblock {
 	uint inodestart; // Block number of first inode block
 	uint bmapstart; // Block number of first free map block
 };
+
+// 基本信息：块大小 BSIZE = 1024B，总容量 FSSIZE = 1000 个 block = 1000 * 1024 B
+// Layout: 
+// 0号块留待后续拓展，可以忽略。superblock 固定为 1 号块，size 固定为一个块
+// 其后是储存 inode 的若干个块，占用块数 = inode 上限 / 每个块上可以容纳的 inode 数量
+// 其中 inode 上限固定为 200，每个块的容量 = BSIZE / sizeof(struct disk_inode)
+// 再之后是数据块相关内容，包含一个 储存空闲块位置的 bitmap 和 实际的数据块，bitmap 块 
+// 数量固定为 NBITMAP = FSSIZE / (BSIZE * 8) + 1 = 1000 / 8 + 1 = 126 块。 
+// [ boot block | sb block | inode blocks | free bit map | data blocks ]
 
 #define FSMAGIC 0x10203040
 

@@ -16,13 +16,13 @@
 	} while (0)
 #endif
 
-#define NINODES 200
+#define NINODES 200	// 200 个文件
 
 // Disk layout:
 // [ boot block | sb block | inode blocks | free bit map | data blocks ]
 
-int nbitmap = FSSIZE / (BSIZE * 8) + 1;
-int ninodeblocks = NINODES / IPB + 1;
+int nbitmap = FSSIZE / (BSIZE * 8) + 1; // 1000 个 block 的 bitmap，1个块
+int ninodeblocks = NINODES / IPB + 1;	// 200个inode占用block的数量，13个块
 int nmeta; // Number of meta blocks (boot, sb, nlog, inode, bitmap)
 int nblocks; // Number of data blocks
 
@@ -81,6 +81,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	// 1 fs block = 1 disk sector
+	// 1 + 1(supeblock) + inode结构体占用block的数量 + block bitmap 占用block数量
 	nmeta = 2 + ninodeblocks + nbitmap;
 	nblocks = FSSIZE - nmeta;
 
